@@ -1,7 +1,7 @@
-# Drone Surveillance System — Protocol Implementations
+# Drone Surveillance System - Protocol Implementations
 
 This repository contains implementations of secure protocols for **drone ↔ remote-user surveillance** workflows.  
-The system is built around a **Global Security Service (GSS)** that bootstraps system parameters, performs registration, and mediates login requests; after mediation the **Drone** and **Remote User** perform mutual authentication and establish session keys for data exchange.
+The system is built around a **Global Security Service (GSS)** that bootstraps system parameters, performs registration, and mediates login requests; after mediation, the **Drone** and **Remote User** perform mutual authentication and establish session keys for data exchange.
 
 ---
 
@@ -11,7 +11,7 @@ The system is built around a **Global Security Service (GSS)** that bootstraps s
   - Generates system-wide parameters (curve, hash, KDF, long-term key material).  
   - Acts as the *registration authority*: registers drones and remote users, issues credentials (e.g., identity-based private keys, partial keys, certificates).  
   - Authenticates remote-user login requests and forwards them to the intended drone (acting as a secure mediator/dispatcher).  
-  - Not in the data-plane after successful authentication: it does **not** remain on the critical path for the AKE or data stream.
+  - Not in the data plane after successful authentication: it does **not** remain on the critical path for the AKE or data stream.
 
 - **Drone**  
   - Registered with GSS and provisioned with long-term credentials.  
@@ -28,7 +28,7 @@ The system is built around a **Global Security Service (GSS)** that bootstraps s
 ## 🔁 End-to-end message flow (concise)
 
 1. **System bootstrap** (one-time / GSS)  
-   - GSS → generate system parameters (curve `G`, `Hash`, `KDF`, GSS long-term key material).
+   - GSS → generate system parameters (`Hash`, `KDF`, GSS long-term key material).
 
 2. **Registration (off-line / provisioning)**  
    - Drone registers with GSS → receives long-term credential (e.g., IBC private key or cert).  
@@ -46,11 +46,11 @@ The system is built around a **Global Security Service (GSS)** that bootstraps s
    - Drone may optionally consult local policy / ACLs.
 
 6. **Mutual AKE — Drone ↔ Remote User**  
-   - Upon acceptance, **Drone** and **Remote User** run an authenticated key exchange (ephemeral keys + long-term credentials) to derive a fresh session key `K_s`.  
+   - Upon acceptance, **Drone** and **Remote User** run an authenticated key exchange (ephemeral keys + long-term credentials) to derive a fresh session key `SK`.  
    - This AKE provides entity authentication, forward secrecy, replay protection, and explicit key confirmation.
 
 7. **Data Exchange**  
-   - Drone → encrypts telemetry / surveillance data with `K_s` and sends to Remote User.  
+   - Drone → encrypts telemetry / surveillance data with `SK` and sends to Remote User.  
    - Remote User decrypts and consumes data.
 
 8. **Audit & Logging (optional)**  
